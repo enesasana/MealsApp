@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mealsapp/dummy_data.dart';
+import 'package:mealsapp/models/meal.dart';
 import 'package:mealsapp/screens/catregory_meals_screen.dart';
 import 'package:mealsapp/screens/filters_screen.dart';
 import 'package:mealsapp/screens/meal_detail_screen.dart';
@@ -6,15 +8,52 @@ import 'package:mealsapp/screens/tabs_screen.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  Map<String, bool> _filters = {
+    'vegan': false,
+    'vegetarian': false,
+    'gluten': false,
+    'lactose': false,
+  };
+
+  List<Meal> _avaliableMeals = DUMMY_MEALS;
+
+  void _setFilters(Map<String, bool> filterData) {
+    setState(() {
+      _filters = filterData;
+
+      _avaliableMeals = DUMMY_MEALS.where((meal) {
+        if(_filters['vegan'] && !meal.isVegan) {
+          return false;
+        }
+        if(_filters['vegetarian'] && !meal.isVegetarian) {
+          return false;
+        }
+        if(_filters['gluten'] && !meal.isGlutenFree) {
+          return false;
+        }
+        if(_filters['lactose'] && !meal.isLactoseFree) {
+          return false;
+        }
+        return true;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Delicious Meals',
       theme: ThemeData(
           primarySwatch: Colors.teal,
-          accentColor: Colors.amber,
+          accentColor: Colors.amberAccent,
           canvasColor: Color.fromRGBO(255, 254, 229, 1),
           fontFamily: 'Raleway',
           textTheme: ThemeData
@@ -30,12 +69,13 @@ class MyApp extends StatelessWidget {
           )
       ),
       //home: CategoriesScreen(), // alternatif olarak route şeklinde de eklenebilir
-      initialRoute: '/',  // default is '/'
+      initialRoute: '/',
+      // default is '/'
       routes: {
         '/': (ctx) => TabsScreen(),
-        CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
+        CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(_avaliableMeals),
         MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
-        FiltersScreen.routeName: (ctx) => FiltersScreen(),
+        FiltersScreen.routeName: (ctx) => FiltersScreen(_filters, _setFilters),
       },
     );
   }
