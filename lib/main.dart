@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mealsapp/screens/categories_%20screen.dart';
 import 'package:mealsapp/screens/catregory_meals_screen.dart';
+import 'package:mealsapp/screens/filters_screen.dart';
 import 'package:mealsapp/screens/meal_detail_screen.dart';
+import 'package:mealsapp/screens/tabs_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,9 +32,10 @@ class MyApp extends StatelessWidget {
       //home: CategoriesScreen(), // alternatif olarak route şeklinde de eklenebilir
       initialRoute: '/',  // default is '/'
       routes: {
-        '/': (ctx) => CategoriesScreen(),
+        '/': (ctx) => TabsScreen(),
         CategoryMealsScreen.routeName: (ctx) => CategoryMealsScreen(),
         MealDetailScreen.routeName: (ctx) => MealDetailScreen(),
+        FiltersScreen.routeName: (ctx) => FiltersScreen(),
       },
     );
   }
