@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:mealsapp/models/meal.dart';
 import 'package:mealsapp/screens/categories_%20screen.dart';
 import 'package:mealsapp/screens/favorites_screen.dart';
 import 'package:mealsapp/widgets/main_drawer.dart';
 
 class TabsScreen extends StatefulWidget {
+
+  final List<Meal> favoriteMeals;
+
+  TabsScreen(this.favoriteMeals);
+
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  final String barOption = 'BottomTabBar'; // 'AppTabBar' 'BottomTabBar'
 
-  final List<Map<String, Object>> _pages = [
-    {'page': CategoriesScreen(), 'title': 'Categories'},
-    {'page': FavoritesScreen(), 'title': 'Your Favorites'}
-  ];
+  List<Map<String, Object>> _pages;
+
+  @override
+  initState() {
+    _pages = [
+      {'page': CategoriesScreen(), 'title': 'Categories'},
+      {'page': FavoritesScreen(widget.favoriteMeals), 'title': 'Your Favorites'}
+    ];
+    super.initState();
+  }
 
   int _selectedPageIndex = 0;
-
   void _selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
@@ -26,36 +36,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return barOption == 'AppTabBar'
-        ? DefaultTabController(
-            //initialIndex: 1, // ilk açılışta hangi tab'ın seçili olacağını belirliyor, 0 by default
-            length: 2,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text('Meals'),
-                centerTitle: true,
-                bottom: TabBar(
-                  tabs: <Widget>[
-                    Tab(
-                      icon: Icon(Icons.category),
-                      text: 'Categories',
-                    ),
-                    Tab(
-                      icon: Icon(Icons.favorite),
-                      text: 'Favorites',
-                    ),
-                  ],
-                ),
-              ),
-              body: TabBarView(
-                children: <Widget>[
-                  CategoriesScreen(),
-                  FavoritesScreen(),
-                ],
-              ),
-            ),
-          )
-        : Scaffold(
+    return Scaffold(
             appBar: AppBar(
               title: Text(_pages[_selectedPageIndex]['title']),
             ),
@@ -81,6 +62,6 @@ class _TabsScreenState extends State<TabsScreen> {
                 ),
               ],
             ),
-          );
+    );
   }
 }
